@@ -12,19 +12,19 @@
 
 -- A. Gross Revenue 
 -- Total revenue generated from positive sales transactions. 
-SELECT SUM(Quantity * Price) as Gross_Revenue
+SELECT SUM(Quantity * Price) AS Gross_Revenue
 FROM online_retail_raw 
 WHERE Quantity > 0
 
 -- B. Refund Value
 -- Total value of customer cancellations. Identified by cancellation invoices (Invoice LIKE 'C%') and negative quantity.
-SELECT SUM(Quantity * Price) as Refund_Value
+SELECT SUM(Quantity * Price) AS Refund_Value
 FROM online_retail_raw
 WHERE Invoice LIKE 'C%' AND Quantity < 0
 
 -- C. Net Revenue 
 -- Total transactional revenue including both sales and cancellations.
-SELECT SUM(Quantity * Price) as Net_Revenue
+SELECT SUM(Quantity * Price) AS Net_Revenue
 FROM online_retail_raw
 
 -- D. Distinct Invoice Count 
@@ -195,7 +195,7 @@ SELECT COUNT(*) AS Adjust_Count
 FROM online_retail_raw
 WHERE StockCode IN ('ADJUST', 'ADJUST2')
 
-SELECT Country, SUM(Quantity * Price) RevenueByCountry
+SELECT Country, SUM(Quantity * Price) AS RevenueByCountry
 FROM online_retail_raw	
 WHERE StockCode IN ('ADJUST', 'ADJUST2')
 GROUP BY Country
@@ -206,7 +206,7 @@ FROM online_retail_raw
 WHERE StockCode IN ('ADJUST', 'ADJUST2')
 
 -- Bad Debt (B)	
-SELECT COUNT(*) as BadDedt_Count
+SELECT COUNT(*) AS BadDedt_Count
 FROM online_retail_raw
 WHERE StockCode = 'B' AND StockCode NOT LIKE '%[0-9]%'
 
@@ -262,6 +262,7 @@ SELECT SUM(Quantity * Price) AS TotalRevenue
 FROM online_retail_raw
 WHERE StockCode = 'CRUK'
 
+
 /* Analysis of non-numeric StockCodes identified several transaction types representing 
    accounting and financial adjustments rather than customer-driven sales activity. 
    These include:
@@ -282,13 +283,171 @@ WHERE StockCode = 'CRUK'
 -Raw data remains preserved in online_retail_raw for audit traceability. */
 
 -- =============================================
--- 3. CLEANING RULEBOOK (Comment Section)
+-- 3. CLEANING RULEBOOK
 -- =============================================
+
+-- Objective:
+-- The staging table (online_retail_stg) represents validated commercial 
+-- transactions reflecting customer-driven purchasing behavior and is 
+-- optimized for revenue, country, customer, and product-level analytics.
+
+
+-- Removal Policy:
+-- 1. Remove transactions with Price <= 0
+--    Reason: Non-commercial or invalid pricing.
+
+-- 2. Remove negative quantity transactions excluding cancellations.
+--    Reason: Operational inventory adjustments (damaged/missing stock).
+
+-- 3. Remove accounting/financial adjustment StockCodes:
+--    ('M', 'ADJUST', 'ADJUST2', 'B', 'BANK CHARGES', 'AMAZONFEE', 'CRUK')
+--    Reason: These represent internal financial movements,
+--    not customer purchasing activity.
+
+-- 4. Remove exact duplicate records.
+--    Reason: Prevent revenue inflation and ensure transactional uniqueness.
+--    Exact duplicates defined as identical values across:
+--    Invoice, StockCode, Description, Quantity, InvoiceDate, Price, Customer_ID, Country.
+
+
+-- Preservation Policy:
+-- 1. Preserve cancellation invoices (Invoice LIKE 'C%').
+--    These represent legitimate customer refunds and are
+--    required for accurate net revenue calculation.
+
+-- 2. Preserve NULL Customer_ID values.
+--    These represent anonymous or unregistered customers.
+
+-- Derived Fields (To Be Added in Staging):
+-- line_revenue = Quantity * Price
+-- is_cancellation (1/0 flag)
+-- invoice_year
+-- invoice_month
+-- invoice_year_month
+
+-- Revenue Definitions:
+-- Gross Revenue: Sum of positive Quantity * Price
+-- Refund Value: Sum of cancellation transactions
+-- Net Revenue: Sum of all transactional revenue including sales and cancellations.
+
+-- Data Lineage:
+-- The online_retail_raw table remains unmodified.
+-- All transformations are implemented in this script
+-- to ensure full reproducibility and audit traceability.
 
 -- =============================================
 -- 4. CREATE STAGING TABLE
 -- =============================================
+DROP TABLE IF EXISTS online_retail_stg;
+
+WITH CTE_CleanedTransactions AS (
+SELECT Invoice,
+	   StockCode,
+	   Description,
+	   Quantity,
+	   InvoiceDate, 
+	   Price,
+	   Customer_ID,
+	   Country,
+	   Quantity * Price AS line_revenue, 
+	   YEAR(InvoiceDate) AS invoice_year, 
+	   MONTH(InvoiceDate) AS invoice_month,
+	   CONVERT(char(7), InvoiceDate, 120) as invoice_year_month,
+	   CASE
+		   WHEN Invoice LIKE 'C%' THEN 1
+		   ELSE 0
+	   END AS is_cancellation,
+	    ROW_NUMBER() OVER(
+          PARTITION BY Invoice,
+		              StockCode,
+					  Description,
+					  Quantity,
+					  InvoiceDate,
+					  Price,
+					  Customer_ID,
+					  Country	
+		 ORDER BY InvoiceDate
+) AS row_num
+FROM online_retail_raw
+WHERE (Invoice LIKE 'C%'
+      OR (Price > 0 AND Quantity > 0)
+	  )
+	  AND StockCode NOT IN ('M', 'ADJUST', 'ADJUST2', 'B', 'BANK CHARGES', 'AMAZONFEE', 'CRUK')
+)
+
+SELECT Invoice,
+       StockCode,
+       Description,
+       Quantity,
+       InvoiceDate,
+       Price,
+       Customer_ID,
+       Country,
+       line_revenue,
+       invoice_year,
+       invoice_month,
+       invoice_year_month,
+       is_cancellation
+INTO online_retail_stg
+FROM CTE_CleanedTransactions
+WHERE row_num = 1
 
 -- =============================================
 -- 5. VALIDATION CHECKS
 -- =============================================
+
+-- Row Count Comparison
+SELECT 
+	(SELECT COUNT(*) FROM online_retail_raw) AS raw_row_count,
+	(SELECT COUNT(*) FROM online_retail_stg) AS stg_row_count,
+	(SELECT COUNT(*) FROM online_retail_raw) - (SELECT COUNT(*) FROM online_retail_stg) AS row_count_difference
+
+-- Revenue Comparison
+SELECT 'RAW' AS dataset,
+       SUM(CASE WHEN Invoice LIKE 'C%' THEN  Quantity * Price ELSE 0 END) AS refund,
+	   SUM(CASE WHEN Quantity > 0 AND Price > 0 THEN Quantity * Price ELSE 0 END) AS gross,
+	   SUM (Quantity * Price) AS net
+FROM online_retail_raw
+UNION ALL
+SELECT 'STAGING' AS dataset,
+		SUM(CASE WHEN Invoice LIKE 'C%' THEN Quantity * Price ELSE 0 END) AS refund,
+		SUM(CASE WHEN Quantity > 0 THEN Quantity * Price ELSE 0 END) AS gross,
+		SUM (Quantity * Price) AS net
+FROM online_retail_stg
+
+--Adjustment Code Verification
+SELECT *
+FROM online_retail_stg
+WHERE StockCode IN ('M', 'ADJUST', 'ADJUST2', 'B', 'BANK CHARGES', 'AMAZONFEE', 'CRUK')
+
+--Operational Adjustment Verification
+SELECT *
+FROM online_retail_stg
+WHERE Quantity < 0 AND Invoice NOT LIKE 'C%'
+
+--Duplicate Verfication
+WITH CTE_Duplcate_Check AS (
+SELECT Invoice,
+	   StockCode,
+	   Description,
+	   Quantity,
+	   InvoiceDate,
+	   Price,
+	   Customer_ID,
+	   Country,
+	   ROW_NUMBER() OVER (
+	   PARTITION BY Invoice,
+					StockCode,
+					Description,
+					Quantity,
+					InvoiceDate,
+					Price,
+					Customer_ID,
+					Country
+	  ORDER BY InvoiceDate) AS row_num 
+FROM online_retail_stg
+)
+
+SELECT * 
+FROM CTE_Duplcate_Check
+WHERE row_num > 1
