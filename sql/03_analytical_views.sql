@@ -1,9 +1,19 @@
--- =============================================
+-- ============================================================
 -- File: 03_analytical_views.sql
--- Purpose: Clean raw retail data and create staging table
--- =============================================
+-- Purpose:
+-- Creates business-ready analytical views to evaluate:
+--   - Net revenue & refund impact
+--   - Top international markets
+--   - High-value customers
+--   - Product demand
+--   - Monthly revenue trends
+--   - Cancellation impact
+--
+-- Source Table: online_retail_stg
+-- Layer: Analytical / BI Layer
+-- ============================================================
 
---Calculate Total Revenue Excluding Cancellations
+-- Company-level revenue and refund metrics
 CREATE VIEW vw_net_revenue_summary AS (
 SELECT SUM(CASE 
                WHEN is_cancellation = 0 THEN line_revenue 
@@ -39,6 +49,7 @@ SELECT SUM(CASE
 FROM online_retail_stg
 )
 
+--International market performance (Excludes UK)
 CREATE VIEW vw_country_revenue_summary AS(
 SELECT Country,
        SUM(line_revenue)AS total_revenue,
@@ -54,6 +65,7 @@ WHERE is_cancellation = 0 AND Country <> 'United Kingdom'
 GROUP BY Country
 )
 
+--High-value international customers (Whales)
 CREATE VIEW vw_customer_ranking AS (
 SELECT Customer_ID,
        Country,
@@ -70,6 +82,7 @@ WHERE is_cancellation = 0
 GROUP BY Customer_ID, Country
 )
 
+--Product demand and revenue by country
 CREATE VIEW vw_country_product_performance AS(
 SELECT Country,
        StockCode,
@@ -87,6 +100,7 @@ GROUP BY Country,
          Description
 )
 
+--Monthly revenue trends and cumulative growth
 CREATE VIEW vw_country_monthly_trends AS (
 SELECT Country,
        YEAR(InvoiceDate) AS year,
@@ -109,6 +123,7 @@ GROUP BY Country,
          invoice_year_month
 )
 
+--Cancellation rate and revenue impact by country
 CREATE VIEW vw_country_cancellation_impact AS(
 SELECT Country, 
        COUNT(DISTINCT CASE 
