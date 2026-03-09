@@ -134,11 +134,11 @@ Kept:
 
 Derived fields created:
 
-line_revenue
-is_cancellation
-invoice_year
-invoice_month
-invoice_day
+- line_revenue
+- is_cancellation
+- invoice_year
+- invoice_month
+- invoice_day
 
 The resulting table becomes the clean transactional dataset used for analytics.
 
