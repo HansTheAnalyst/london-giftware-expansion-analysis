@@ -80,14 +80,14 @@ Key characteristics:
 - Customer purchase history
 
 Main fields include:
-Invoice
-StockCode
-Description
-Quantity
-InvoiceDate
-Price
-Customer_ID
-Country
+- Invoice
+- StockCode
+- Description
+- Quantity
+- InvoiceDate
+- Price
+- Customer_ID
+- Country
 
 Cleaned dataset are not stored in this repository due to Github file size limits.
 
