@@ -1,4 +1,8 @@
 # International Market Expansion Analysis - London Giftware Co.
+![SQL](https://img.shields.io/badge/SQL-Data%20Processing-blue)
+![Excel](https://img.shields.io/badge/Excel-Validation-green)
+![Tableau](https://img.shields.io/badge/Tableau-Visualization-orange)
+![Git](https://img.shields.io/badge/Git-Version%20Control-black)
 
 ## Project Overview
 
