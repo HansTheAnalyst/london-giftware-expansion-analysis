@@ -8,10 +8,10 @@ products. The company sells primarily through bulk wholesale orders to internati
 Currently, the company only monitors **total revenue**, which limits its ability to make
 strategic decisions regarding international market expansion. They lack visibility into:
 
- • The financial impact of refunds and cancellations
- • Which international markets drive the most revenue
- • Their highest value customers
- • Product demand patterns across countries
+- The financial impact of refunds and cancellations
+- Which international markets drive the most revenue
+- Their highest value customers
+- Product demand patterns across countries
 
 This project builds a **structured analytics solution** that transforms raw transactional data
 into actionable business insights using **SQL**, **Excel validation**, and **Tableau Dashboard**.
