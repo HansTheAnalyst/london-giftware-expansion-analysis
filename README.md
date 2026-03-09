@@ -73,11 +73,11 @@ Many customers of the company are wholesalers.
 https://www.kaggle.com/datasets/mashlyn/online-retail-ii-uci
 
 Key characteristics:
-• 1 million transactional rows
-• International wholesale orders
-• Product level transaction data
-• Refund and cancellation orders
-• Customer purchase history
+- 1 million transactional rows
+- International wholesale orders
+- Product level transaction data
+- Refund and cancellation orders
+- Customer purchase history
 
 Main fields include:
 Invoice
@@ -103,9 +103,9 @@ analytic practices used in modern data teams.
 File: 01_import_raw.sql
 
 Purpose:
-• Import the CSV dataset
-• Load the raw data into SQL Server
-• Create the online_retail_raw table
+- Import the CSV dataset
+- Load the raw data into SQL Server
+- Create the online_retail_raw table
 
 No transformation occurs here. This layer preserves the original source data exactly as received.
 
@@ -114,23 +114,23 @@ No transformation occurs here. This layer preserves the original source data exa
 File: 02_cleaning_staging.sql
 
 Purpose:
-• Audit raw data
-• Remove operational noise
-• Preserve valid financial transactions
-• Create derived analytical fields
+- Audit raw data
+- Remove operational noise
+- Preserve valid financial transactions
+- Create derived analytical fields
 
 Cleaning rules applied:
 
 Removed:
 
-• UnitPrice ≤ 0
-• Inventory adjustment rows
-• Exact duplicate transactions
+- UnitPrice ≤ 0
+- Inventory adjustment rows
+- Exact duplicate transactions
 
 Kept:
 
-• Refund and cancellation transactions (flagged for analysis)
-• NULL CustomerID values (valid anonymous transactions)
+- Refund and cancellation transactions (flagged for analysis)
+- NULL CustomerID values (valid anonymous transactions)
 
 Derived fields created:
 
@@ -152,11 +152,11 @@ This layer produces **business intelligence metrics** through SQL views.
 
 Views include:
 
-• Net revenue calculations
-• Country revenue rankings
-• Customer revenue rankings
-• Basket size metrics
-• Product popularity metrics
+- Net revenue calculations
+- Country revenue rankings
+- Customer revenue rankings
+- Basket size metrics
+- Product popularity metrics
 
 These analytical views serve as the **data source for Excel validation and Tableau dashboards**.
 
@@ -185,11 +185,11 @@ Excel was used to **validate the SQL outputs**, ensuring analytical accuracy and
 
 Excel validation checks included:
 
-• Revenue totals reconciliation
-• Top country ranking verification
-• Customer revenue validation
-• Basket size recalculation
-• Refund distribution checks
+- Revenue totals reconciliation
+- Top country ranking verification
+- Customer revenue validation
+- Basket size recalculation
+- Refund distribution checks
 
 This step mirrors professional environments where **finance and marketing teams rely heavily on Excel for verification and reporting**.
 
@@ -213,10 +213,10 @@ https://public.tableau.com/app/profile/hans.justin.fernando/viz/LondonGiftwareEx
 
 High-level business performance indicators:
 
-• Net Revenue
-• Gross Revenue
-• Refund Loss
-• Refund Rate
+- Net Revenue
+- Gross Revenue
+- Refund Loss
+- Refund Rate
 
 ### International Market Analysis
 
@@ -224,9 +224,9 @@ Identifies the most profitable international markets.
 
 Visualizations include:
 
-• Top Countries by Net Revenue
-• Country Revenue Share
-• Global Revenue Map
+- Top Countries by Net Revenue
+- Country Revenue Share
+- Global Revenue Map
 
 These insights help determine where expansion marketing should be focused.
 
@@ -236,9 +236,9 @@ Analyzes high-value customer behavior.
 
 Visualizations include:
 
-• Top Customers by Revenue
-• Revenue Concentration Analysis
-• Orders vs Spend Relationship
+- Top Customers by Revenue
+- Revenue Concentration Analysis
+- Orders vs Spend Relationship
 
 This highlights the impact of wholesale buyers who generate a significant portion of revenue.
 
@@ -248,8 +248,8 @@ Examines product demand patterns.
 
 Visualizations include:
 
-• Top Products by Quantity Sold
-• Quantity vs Revenue Comparison
+- Top Products by Quantity Sold
+- Quantity vs Revenue Comparison
 
 These charts reveal which products drive the majority of international demand.
 
@@ -298,11 +298,11 @@ Git & GitHub
 
 This project demonstrates several core data analyst competencies:
 
-• Data auditing and profiling
-• SQL data cleaning and transformation
-• Analytical SQL view design
-• Revenue analytics and business metrics
-• Excel reconciliation and validation
-• Tableau dashboard development
-• Business insight communication
-• Professional analytics workflow
+- Data auditing and profiling
+- SQL data cleaning and transformation
+- Analytical SQL view design
+- Revenue analytics and business metrics
+- Excel reconciliation and validation
+- Tableau dashboard development
+- Business insight communication
+- Professional analytics workflow
