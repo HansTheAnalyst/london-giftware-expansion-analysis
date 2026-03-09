@@ -287,10 +287,10 @@ and paint sets, which dominate international product sales.
 
 ## Tools Used
 
-SQL Server
-Excel
-Tableau
-Git & GitHub
+- SQL Server
+- Excel
+- Tableau
+- Git & GitHub
 
 ---
 
