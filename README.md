@@ -1,6 +1,7 @@
 # International Market Expansion Analysis - London Giftware Co.
 ![SQL](https://img.shields.io/badge/SQL-Data%20Processing-blue)
 ![Excel](https://img.shields.io/badge/Excel-Validation-green)
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-yellow)
 ![Tableau](https://img.shields.io/badge/Tableau-Visualization-orange)
 ![Git](https://img.shields.io/badge/Git-Version%20Control-black)
 
@@ -25,11 +26,11 @@ that the company should prioritize for next year's marketing expansion strategy.
 
 ### Disclaimer
 
-This project is a stimulated business scenario created for porfolio and educational purposes.
+This project is a simulated business scenario created for portfolio and educational purposes.
 The analysis uses the publicly available **Online Retail dataset** and does not represent
 the actual operations or financial data of a real company.
 The objective of this project is to demonstrate a professional end to end data analytics workflow,
-including data auditing, SQL transformation, Excel validation, and Tableau dashboard development.
+including data auditing, SQL transformation, Excel validation, Tableau dashboard development, and Power BI dashboard developmennt.
 
 ---
 
@@ -45,7 +46,7 @@ https://public.tableau.com/app/profile/hans.justin.fernando/viz/LondonGiftwareEx
 Identify the **Top 3 most profitable international markets (excluding the UK)** to guide next year's
 marketing investment strategy.
 
-The analysis answers for critical business questions:
+The analysis answers four critical business questions:
 
 ### 1. The Refund Trap
 
