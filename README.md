@@ -19,7 +19,7 @@ strategic decisions regarding international market expansion. They lack visibili
 - Product demand patterns across countries
 
 This project builds a **structured analytics solution** that transforms raw transactional data
-into actionable business insights using **SQL**, **Excel validation**, and **Tableau Dashboard**.
+into actionable business insights using **SQL**, **Excel validation**, **Tableau Visualization**, and **Power BI Dashboard**.
 
 The objective is to identify the **Top 3 most profitable international markets (excluding the united kingdom)**
 that the company should prioritize for next year's marketing expansion strategy.
@@ -30,7 +30,7 @@ This project is a simulated business scenario created for portfolio and educatio
 The analysis uses the publicly available **Online Retail dataset** and does not represent
 the actual operations or financial data of a real company.
 The objective of this project is to demonstrate a professional end to end data analytics workflow,
-including data auditing, SQL transformation, Excel validation, Tableau dashboard development, and Power BI dashboard developmennt.
+including data auditing, SQL transformation, Excel validation, Tableau visualization, and Power BI dashboard developmennt.
 
 ---
 
