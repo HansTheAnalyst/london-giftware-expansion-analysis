@@ -34,6 +34,7 @@ including data auditing, SQL transformation, Excel validation, Tableau visualiza
 
 ---
 ## Power BI Dashboard 
+https://github.com/HansTheAnalyst/london-giftware-expansion-analysis/tree/main/power%20bi
 
 ## Live Interactive Tableau Dashboard
 
