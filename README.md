@@ -33,8 +33,9 @@ The objective of this project is to demonstrate a professional end to end data a
 including data auditing, SQL transformation, Excel validation, Tableau visualization, and Power BI dashboard developmennt.
 
 ---
+## Power BI Dashboard 
 
-## Live Interactive Dashboard
+## Live Interactive Tableau Dashboard
 
 Explore the interactive dashboard on Tableau Public:
 https://public.tableau.com/app/profile/hans.justin.fernando/viz/LondonGiftwareExpansionAnalysis/LondonGiftwareMarketExpansionAnalysis
